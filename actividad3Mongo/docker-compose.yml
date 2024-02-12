@@ -1,0 +1,32 @@
+#docker inspect contenedor
+
+#Comando largo de docker run -->
+#docker run -d -it --name mi-daw-12 net mi-red --ip 172.100.0.10 --mount source=mi-vol,target=/app/data -p 8080:80 ubuntu:22.04
+#
+
+#docker build -t <nombre> . --> crear
+
+services:
+  mi-mongo:
+    image: mongo
+    container_name: mi-mongo
+    networks:
+      - mi-red
+    volumes:
+      - mi-volumen:/data/db
+
+  mi-mongo-express:
+    image: mongo-express
+    container_name: mi-mongo-express
+    networks:
+      - mi-red
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mi-mongo
+    ports:
+      - "8081:8081"
+
+networks:
+  mi-red:
+
+volumes:
+  mi-volumen:

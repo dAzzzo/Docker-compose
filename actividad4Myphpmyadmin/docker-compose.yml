@@ -1,0 +1,35 @@
+#docker inspect contenedor
+
+#Comando largo de docker run -->
+#docker run -d -it --name mi-daw-12 net mi-red --ip 172.100.0.10 --mount source=mi-vol,target=/app/data -p 8080:80 ubuntu:22.04
+#
+
+#docker build -t <nombre> . --> crear
+
+services:
+  mi-daw-12:
+    build:
+      context: .
+    image: image-daw-12
+    stdin_open: true # -i
+    tty: true # -t
+    networks:
+      mi-red-12: # --net mi-red
+        ipv4_address: 172.100.0.10 # --ip 172.100.0.10
+    volumes: # --mount source=mi-vol,target=/app/data
+      - mi-volumen:/app/data
+    ports:
+      - "8080:80"
+    container_name: mi-daw-12
+
+#docker network create --subnet 170.100.0.0/16 mi-red
+networks:
+  mi-red-12:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.100.0.0/16 # --subnet 172.100.0.0/16
+
+#docker volume create mi-vol
+volumes:
+  mi-volumen:
