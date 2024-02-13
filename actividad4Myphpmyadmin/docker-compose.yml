@@ -5,31 +5,35 @@
 #
 
 #docker build -t <nombre> . --> crear
-
 services:
-  mi-daw-12:
-    build:
-      context: .
-    image: image-daw-12
-    stdin_open: true # -i
-    tty: true # -t
+  mi-mysql:
+    image: mysql
+    container_name: mi-mysql
     networks:
-      mi-red-12: # --net mi-red
-        ipv4_address: 172.100.0.10 # --ip 172.100.0.10
-    volumes: # --mount source=mi-vol,target=/app/data
-      - mi-volumen:/app/data
+      mi-mysqlred:
+        ipv4_address: 172.25.0.2
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+    volumes:
+      - mi-mysql-vol:/var/lib/mysql
+
+  mi-dashboard:
+    image: phpmyadmin/phpmyadmin
+    container_name: mi-dashboard
+    networks:
+      - mi-mysqlred
+    environment:
+      PMA_HOST: mi-mysql
     ports:
       - "8080:80"
-    container_name: mi-daw-12
 
-#docker network create --subnet 170.100.0.0/16 mi-red
 networks:
-  mi-red-12:
+  mi-mysqlred:
+    driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 172.100.0.0/16 # --subnet 172.100.0.0/16
+        - subnet: 172.25.0.0/16
 
-#docker volume create mi-vol
 volumes:
-  mi-volumen:
+  mi-mysql-vol:

@@ -6,6 +6,8 @@
 
 #docker build -t <nombre> . --> crear
 
+#mongo → p 8081: usuario= admin, contraseña= pass
+
 services:
   mi-mongo:
     image: mongo
